@@ -35,7 +35,7 @@ async function ajouterProduit(){
   inputNom.value="";
   inputQuantite.value="";
 
-recupererProduits();
+  recupererProduits();
 }
 boutonAjouter.addEventListener("click", ajouterProduit);
 
@@ -45,15 +45,37 @@ async function afficherProduits(produits: Produit[]) {
     const item = document.createElement("li");
     item.textContent = `${produit.nom} - quantite : ${produit.quantite}`;
 
-    const boutonSupprimer = document.createElement("button");
-    boutonSupprimer.textContent = "Supprimer";
-    boutonSupprimer.addEventListener("click", () => {
-      supprimerProduit(produit.id);
+    const inputRetrait = document.createElement("input");
+    inputRetrait.type = "number";
+    inputRetrait.placeholder = "quantite a retirer";
+
+    const boutonRetirer = document.createElement("button");
+    boutonRetirer.textContent = "Retirer";
+    boutonRetirer.addEventListener("click", () => {
+      const quantiteARetirer = Number(inputRetrait.value);
+      retirerQuantite(produit.id, quantiteARetirer);
     });
 
-    item.appendChild(boutonSupprimer);
+    const boutonHistorique = document.createElement("button");
+    boutonHistorique.textContent = "Historique";
+    boutonHistorique.addEventListener("click", () => {
+      afficherHistorique(produit.id);
+    });
+
+    item.appendChild(inputRetrait);
+    item.appendChild(boutonRetirer);
+    item.appendChild(boutonHistorique);
     listeProduits.append(item);
   }
+}
+
+async function retirerQuantite(id: number, quantiteARetirer: number) {
+  await fetch(`http://localhost:8080/produits/${id}/retirer`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quantite: quantiteARetirer })
+  });
+  recupererProduits();
 }
 
 async function supprimerProduit(id: number) {
@@ -62,3 +84,19 @@ async function supprimerProduit(id: number) {
   });
   recupererProduits();
 }
+type Mouvement={
+  id:number;
+  id_produit:number;
+  type:string;
+  quantite:number;
+}
+async function afficherHistorique(produitid:number){
+  const reponse=await fetch(`http://localhost:8080/produits/${produitid}/historique`);
+  const mouvements: Mouvement[]=await reponse.json();
+  let texte=`Historique du produit ${produitid}:\n`;
+  for (const mouvement of mouvements){
+    texte += `-${mouvement.type}(quantite:${mouvement.quantite})\n`;
+  }
+  alert(texte);
+}
+recupererProduits();

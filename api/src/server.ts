@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import{ajouterProduit,modifierProduit,supprimerProduit,listerProduit,getProduit} from "./produit";
+import{ajouterProduit,modifierProduit,supprimerProduit,listerProduit,getProduit,retirerQuantiteProduit} from "./produit";
 import{enregistrerMouvement,historiqueProduit}from "./mouvement";
 
 const fastify=Fastify();
@@ -32,13 +32,28 @@ async function demarrer(){
         if (produit){
             quantiteAvantSuppression=produit.quantite;
         } 
+        
+        enregistrerMouvement(Number(id),"suppression",quantiteAvantSuppression);
         const changements=supprimerProduit(Number(id));
-        enregistrerMouvement(Number(id),"supprision",0);
         return{supprime:changements>0};
+});
+    fastify.get("/produits/:id/historique",async(request,reply)=>{
+        const {id}=request.params as {id:string};
+        return historiqueProduit(Number(id));
+    });
+
+
+    fastify.put("/produits/:id/retirer", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { quantite } = request.body as { quantite: number };
+    
+    const nouvelleQuantite = retirerQuantiteProduit(Number(id), quantite);
+    enregistrerMouvement(Number(id), "retrait", quantite);
+    
+    return { id: Number(id), nouvelleQuantite };
 });
     await fastify.listen({port:8080});
     console.log("serveur bde yekhdem sur http://localhost:8080");
-
 }
 
 demarrer();

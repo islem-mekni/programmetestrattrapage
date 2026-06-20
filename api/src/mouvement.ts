@@ -8,4 +8,5 @@ function historiqueProduit(id_produit:number){
     const requete=db.prepare("SELECT * FROM mouvement WHERE id=?");
     return requete.all(id_produit);
 }
+
 export{enregistrerMouvement,historiqueProduit}
