@@ -1,0 +1,46 @@
+body
+ { 
+  font-family: system-ui, sans-serif; 
+   text-align: center; 
+   background: #6f7dca;
+    color: #f3f4f6;
+  }
+#app {
+   max-width: 600px; 
+   margin: 2rem auto; 
+   padding: 1rem; }
+h1, h2, label {
+   color: #7406e2;
+   }
+section, li {
+   background:rgb(211, 152, 223); 
+   padding: 1rem;
+   border-radius: 12px;
+    margin: 1rem 0; 
+    }
+input, button { 
+  padding: 0.6rem; 
+  margin: 0.2rem; 
+  border: none; 
+  border-radius: 6px;
+ }
+input 
+{
+   outline: 1px solid #115eda;
+   color: #fff;
+}
+button { 
+  background: linear-gradient(90deg, #3b82f6, #c084fc); 
+  color: #fff;
+   font-weight: bold;
+   cursor: pointer;
+   }
+ul { 
+  list-style: none;
+  padding: 0;
+  text-align: left;
+   }
+li
+ { 
+  border-left: 5px solid #3b82f6; 
+}
